@@ -296,127 +296,56 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Efeito de elasticidade nos cards (estica e comprime no scroll)
-    function addElasticEffect() {
+    // Efeito de mola nos cards (estica e comprime com bounce)
+    function addBounceElasticEffect() {
         const cards = document.querySelectorAll('.link-card');
-        let lastScrollTime = Date.now();
-        let lastScrollPos = window.scrollY;
-        let scrollVelocity = 0;
-        let animationFrame = null;
-        
-        function updateElasticEffect() {
-            const now = Date.now();
-            const currentScrollPos = window.scrollY;
-            const deltaTime = Math.max(16, now - lastScrollTime);
-            const deltaScroll = currentScrollPos - lastScrollPos;
-            
-            // Calcula velocidade do scroll (pixels por segundo)
-            scrollVelocity = Math.abs(deltaScroll) / deltaTime * 1000;
-            
-            // Determina o fator de esticamento baseado na velocidade
-            let stretchFactor = Math.min(scrollVelocity / 800, 0.12);
-            
-            // Detecta parada brusca (desaceleração rápida)
-            const isSuddenStop = scrollVelocity < 50 && deltaScroll !== 0 && stretchFactor > 0.05;
-            
-            cards.forEach((card, index) => {
-                // Efeito de esticar no movimento rápido
-                if (scrollVelocity > 200) {
-                    const direction = deltaScroll > 0 ? 1 : -1;
-                    card.style.transition = 'transform 0.1s ease-out';
-                    card.style.transform = `scaleX(${1 + stretchFactor * 0.5}) scaleY(${1 - stretchFactor * 0.3})`;
-                } 
-                // Efeito de compressão na parada brusca
-                else if (isSuddenStop) {
-                    card.style.transition = 'transform 0.08s cubic-bezier(0.2, 1.2, 0.8, 1)';
-                    card.style.transform = `scaleX(0.98) scaleY(0.96)`;
-                    
-                    // Volta ao normal após a compressão
-                    setTimeout(() => {
-                        if (card.style.transform) {
-                            card.style.transition = 'transform 0.2s cubic-bezier(0.2, 0.8, 0.4, 1)';
-                            card.style.transform = '';
-                        }
-                    }, 120);
-                }
-                else {
-                    // Volta ao normal gradualmente
-                    card.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
-                    card.style.transform = '';
-                }
-            });
-            
-            lastScrollTime = now;
-            lastScrollPos = currentScrollPos;
-            animationFrame = requestAnimationFrame(updateElasticEffect);
-        }
-        
-        // Inicia o loop de animação
-        animationFrame = requestAnimationFrame(updateElasticEffect);
-        
-        // Limpa o animation frame quando necessário
-        window.addEventListener('beforeunload', () => {
-            if (animationFrame) cancelAnimationFrame(animationFrame);
-        });
-    }
-
-    // Versão mais simples e suave (recomendo testar esta primeiro)
-    function addSmoothElasticEffect() {
-        const cards = document.querySelectorAll('.link-card');
-        let scrolling = false;
-        let scrollTimeout;
-        let lastScrollPos = window.scrollY;
-        
-        function applyStretch() {
-            const currentScrollPos = window.scrollY;
-            const scrollDelta = Math.abs(currentScrollPos - lastScrollPos);
-            const stretchIntensity = Math.min(scrollDelta / 80, 0.08);
-            
-            if (scrollDelta > 15 && scrolling) {
-                // Estica enquanto rola
-                cards.forEach((card) => {
-                    card.style.transition = 'transform 0.05s linear';
-                    card.style.transform = `scaleX(${1 + stretchIntensity}) scaleY(${1 - stretchIntensity * 0.4})`;
-                });
-            }
-            
-            lastScrollPos = currentScrollPos;
-        }
-        
-        function applyCompress() {
-            // Comprime quando para
-            cards.forEach((card) => {
-                card.style.transition = 'transform 0.08s cubic-bezier(0.2, 1.2, 0.8, 1)';
-                card.style.transform = `scaleX(0.98) scaleY(0.97)`;
-                
-                // Volta ao normal
-                setTimeout(() => {
-                    card.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
-                    card.style.transform = '';
-                }, 100);
-            });
-        }
+        let isScrolling = false;
+        let scrollTimer;
+        let stretchTimer;
         
         window.addEventListener('scroll', () => {
-            if (!scrolling) {
-                scrolling = true;
+            // Calcula velocidade do scroll
+            const now = Date.now();
+            if (!isScrolling) {
+                isScrolling = true;
+                
+                // Efeito de esticar ao começar a rolar
+                cards.forEach((card) => {
+                    card.style.transition = 'transform 0.1s ease-out';
+                    card.style.transform = 'scaleX(1.03) scaleY(0.96)';
+                });
+                
+                // Volta parcialmente após esticar
+                stretchTimer = setTimeout(() => {
+                    cards.forEach((card) => {
+                        card.style.transition = 'transform 0.15s cubic-bezier(0.2, 0.8, 0.4, 1)';
+                        card.style.transform = 'scaleX(1.01) scaleY(0.99)';
+                    });
+                }, 80);
             }
             
-            applyStretch();
-            
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(() => {
-                // Quando para de rolar
-                if (scrolling) {
-                    applyCompress();
-                    scrolling = false;
-                }
-            }, 50);
+            // Reseta o timer do scroll
+            clearTimeout(scrollTimer);
+            scrollTimer = setTimeout(() => {
+                // Quando para de rolar, aplica compressão e bounce
+                cards.forEach((card) => {
+                    card.style.transition = 'transform 0.1s cubic-bezier(0.2, 1.3, 0.6, 1)';
+                    card.style.transform = 'scaleX(0.97) scaleY(0.95)';
+                    
+                    // Volta ao normal com bounce
+                    setTimeout(() => {
+                        card.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.5, 0.2, 1.2)';
+                        card.style.transform = '';
+                    }, 100);
+                });
+                
+                isScrolling = false;
+            }, 80);
         });
     }
 
-    // Chama a função (use uma das duas)
-    addSmoothElasticEffect();
+    // Chama a função
+    addBounceElasticEffect();
 
     console.log('✨ Sweet Iza - Página com docinhos flutuantes e ícones personalizados ✨');
 });
