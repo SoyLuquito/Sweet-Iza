@@ -365,3 +365,73 @@ body::before {
         transform: translateX(0);
     }
 }
+
+/* Ondas com movimento lateral e ondulação suave */
+.wave-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 -4px 6px rgba(0, 0, 0, 0.02));
+    overflow: visible;
+}
+
+/* Camada 1 - Onda da frente (mais escura) - move para a direita */
+.wave-svg path:nth-child(1) {
+    animation: waveRight 8s ease-in-out infinite, waveSway 4s ease-in-out infinite;
+    transform-origin: center;
+}
+
+/* Camada 2 - Onda do meio (média) - move para a esquerda */
+.wave-svg path:nth-child(2) {
+    animation: waveLeft 10s ease-in-out infinite, waveSway 5s ease-in-out infinite 0.5s;
+    transform-origin: center;
+}
+
+/* Camada 3 - Onda de fundo (mais clara) - move para a direita mais lentamente */
+.wave-svg path:nth-child(3) {
+    animation: waveRightSlow 12s ease-in-out infinite, waveSway 6s ease-in-out infinite 1s;
+    transform-origin: center;
+}
+
+/* Movimento lateral para a direita */
+@keyframes waveRight {
+    0%, 100% {
+        transform: translateX(0px);
+    }
+    50% {
+        transform: translateX(25px);
+    }
+}
+
+/* Movimento lateral para a esquerda */
+@keyframes waveLeft {
+    0%, 100% {
+        transform: translateX(0px);
+    }
+    50% {
+        transform: translateX(-25px);
+    }
+}
+
+/* Movimento lateral para a direita mais lento */
+@keyframes waveRightSlow {
+    0%, 100% {
+        transform: translateX(0px);
+    }
+    50% {
+        transform: translateX(15px);
+    }
+}
+
+/* Ondulação suave vertical */
+@keyframes waveSway {
+    0%, 100% {
+        transform: translateY(0px) scaleY(1);
+    }
+    25% {
+        transform: translateY(-6px) scaleY(1.02);
+    }
+    75% {
+        transform: translateY(4px) scaleY(0.98);
+    }
+}
