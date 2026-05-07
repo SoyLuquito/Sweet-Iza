@@ -34,7 +34,7 @@ body::before {
     z-index: 0;
 }
 
-/* ONDULAÇÃO MAIS ALTA */
+/* ONDULAÇÃO - METADE DA TELA */
 .wave-ornament {
     position: fixed;
     bottom: 0;
@@ -51,16 +51,17 @@ body::before {
     filter: drop-shadow(0 -4px 6px rgba(0, 0, 0, 0.02));
 }
 
-/* Aumentando a altura das ondas */
-@media (min-width: 769px) {
+/* Mobile - ondas ocupando metade da tela */
+@media (max-width: 768px) {
     .wave-svg {
-        min-height: 180px;
+        min-height: 45vh;
     }
 }
 
-@media (max-width: 768px) {
+/* Desktop - ondas altas mas proporcionais */
+@media (min-width: 769px) {
     .wave-svg {
-        min-height: 150px;
+        min-height: 280px;
     }
 }
 
