@@ -296,31 +296,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Efeito super leve - só um "suspiro" de compressão
-    function addMicroSquash() {
+    // Efeito leve - meio termo entre suave e perceptível
+    function addSoftSquash() {
         const cards = document.querySelectorAll('.link-card');
         let squashing = false;
         
-        function microSquash() {
+        function softSquash() {
             if (squashing) return;
             squashing = true;
             
-            // Apenas 1.5% de compressão - muito sutil
+            // Compressão de 3% - visível mas suave
             cards.forEach((card) => {
-                card.style.transition = 'transform 0.12s cubic-bezier(0.2, 0.8, 0.4, 1.1)';
-                card.style.transform = 'scaleY(0.985) scaleX(1.005)';
+                card.style.transition = 'transform 0.1s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
+                card.style.transform = 'scaleY(0.97) scaleX(1.01)';
             });
             
-            // Volta com ainda mais suavidade
+            // Volta com bounce suave
             setTimeout(() => {
                 cards.forEach((card) => {
-                    card.style.transition = 'transform 0.25s cubic-bezier(0.3, 0.7, 0.2, 1)';
+                    card.style.transition = 'transform 0.2s cubic-bezier(0.2, 0.7, 0.3, 1.2)';
                     card.style.transform = '';
                 });
                 
                 setTimeout(() => {
                     squashing = false;
-                }, 280);
-            }, 120);
+                }, 240);
+            }, 100);
         }
         
         let lastTop = true;
@@ -330,15 +331,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const atTop = window.scrollY <= 1;
             const atBottom = document.body.scrollHeight - window.innerHeight - window.scrollY <= 1;
             
-            if (atTop && !lastTop) microSquash();
-            if (atBottom && !lastBottom) microSquash();
+            if (atTop && !lastTop) softSquash();
+            if (atBottom && !lastBottom) softSquash();
             
             lastTop = atTop;
             lastBottom = atBottom;
         });
     }
 
-    addMicroSquash();
+    addSoftSquash();
 
     console.log('✨ Sweet Iza - Página com docinhos flutuantes e ícones personalizados ✨');
 });
