@@ -296,75 +296,54 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Efeito de amassar tipo desenho animado (SÓ quando bate no limite)
-    function addSquashEffect() {
+    // Efeito de amassar - versão simples e garantida
+    function addSimpleSquash() {
         const cards = document.querySelectorAll('.link-card');
-        let isAnimating = false;
+        let canSquash = true;
         
-        function squash() {
-            if (isAnimating) return;
-            isAnimating = true;
+        function doSquash() {
+            if (!canSquash) return;
+            canSquash = false;
             
-            // Frame 1: Amassa rapidinho (comprime)
-            cards.forEach((card, i) => {
-                card.style.transition = `transform 0.06s cubic-bezier(0.2, 1.2, 0.8, 1)`;
-                card.style.transform = `scaleY(0.86) scaleX(1.08)`;
+            // Amassa
+            cards.forEach(card => {
+                card.style.transition = 'transform 0.07s ease-out';
+                card.style.transform = 'scaleY(0.85) scaleX(1.09)';
             });
             
-            // Frame 2: Volta um pouco (sobre-compressão)
+            // Volta com bounce
             setTimeout(() => {
-                cards.forEach((card, i) => {
-                    card.style.transition = `transform 0.08s cubic-bezier(0.2, 0.9, 0.4, 1.1)`;
-                    card.style.transform = `scaleY(0.94) scaleX(1.04)`;
+                cards.forEach(card => {
+                    card.style.transition = 'transform 0.12s cubic-bezier(0.2, 1.2, 0.4, 1)';
+                    card.style.transform = 'scaleY(1.02) scaleX(0.99)';
                 });
-            }, 60);
-            
-            // Frame 3: Estica levemente
-            setTimeout(() => {
-                cards.forEach((card, i) => {
-                    card.style.transition = `transform 0.1s cubic-bezier(0.1, 1.1, 0.3, 1)`;
-                    card.style.transform = `scaleY(1.04) scaleX(0.98)`;
-                });
-            }, 140);
-            
-            // Frame 4: Volta ao normal
-            setTimeout(() => {
-                cards.forEach((card, i) => {
-                    card.style.transition = `transform 0.15s cubic-bezier(0.2, 0.6, 0.2, 1.2)`;
-                    card.style.transform = `scaleY(1) scaleX(1)`;
-                });
+                
                 setTimeout(() => {
-                    isAnimating = false;
-                }, 180);
-            }, 220);
+                    cards.forEach(card => {
+                        card.style.transition = 'transform 0.1s ease-out';
+                        card.style.transform = '';
+                    });
+                    canSquash = true;
+                }, 120);
+            }, 70);
         }
         
-        // Detecta quando bate no topo
-        let atTop = true;
-        let atBottom = false;
+        let lastTop = true;
+        let lastBottom = false;
         
         window.addEventListener('scroll', () => {
-            const scrollTop = window.scrollY;
-            const scrollBottom = document.body.scrollHeight - window.innerHeight - window.scrollY;
+            const atTop = window.scrollY <= 1;
+            const atBottom = document.body.scrollHeight - window.innerHeight - window.scrollY <= 1;
             
-            if (scrollTop <= 2 && !atTop) {
-                atTop = true;
-                squash();
-            } else if (scrollTop > 2 && atTop) {
-                atTop = false;
-            }
+            if (atTop && !lastTop) doSquash();
+            if (atBottom && !lastBottom) doSquash();
             
-            if (scrollBottom <= 2 && !atBottom) {
-                atBottom = true;
-                squash();
-            } else if (scrollBottom > 5 && atBottom) {
-                atBottom = false;
-            }
+            lastTop = atTop;
+            lastBottom = atBottom;
         });
     }
 
-    addSquashEffect();
-
-    addElasticSquash();
+    addSimpleSquash();
 
     console.log('✨ Sweet Iza - Página com docinhos flutuantes e ícones personalizados ✨');
 });
