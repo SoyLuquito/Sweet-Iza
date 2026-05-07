@@ -28,23 +28,23 @@ document.addEventListener('DOMContentLoaded', () => {
         docinho.textContent = docinhoAleatorio;
         docinho.className = 'docinho-flutuante';
         
-        // Posição horizontal aleatória (sempre nas laterais ou espalhado, mas preferencialmente laterais)
+        // Posição horizontal aleatória
         const isLeftSide = Math.random() > 0.5;
         let leftPosition;
         if (isLeftSide) {
-            leftPosition = Math.random() * 15; // 0% a 15% da esquerda
+            leftPosition = Math.random() * 20; // Expandido um pouco
         } else {
-            leftPosition = 85 + Math.random() * 15; // 85% a 100% da esquerda
+            leftPosition = 80 + Math.random() * 20;
         }
         
-        // Tamanho aleatório entre 24px e 48px
-        const tamanho = 24 + Math.random() * 24;
-        
-        // Duração da animação entre 6 e 12 segundos
-        const duracao = 6 + Math.random() * 6;
-        
-        // Atraso inicial aleatório
+        const tamanho = 24 + Math.random() * 32;
+        const duracao = 6 + Math.random() * 8;
         const atraso = Math.random() * 5;
+        
+        // 🆕 Z-index aleatório para passar tanto na frente quanto atrás
+        // 3 = atrás dos botões, 5 = entre, 20 = na frente
+        const zIndexOptions = [3, 5, 8, 12, 18, 22];
+        const randomZIndex = zIndexOptions[Math.floor(Math.random() * zIndexOptions.length)];
         
         docinho.style.cssText = `
             position: fixed;
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             left: ${leftPosition}%;
             font-size: ${tamanho}px;
             opacity: 0;
-            z-index: 1000;
+            z-index: ${randomZIndex};
             pointer-events: none;
             animation: subirDocinho ${duracao}s linear ${atraso}s infinite;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
@@ -60,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         document.body.appendChild(docinho);
         
-        // Remover o elemento após a animação para não acumular
         setTimeout(() => {
             if (docinho && docinho.remove) {
                 docinho.remove();
@@ -296,78 +295,122 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Efeito de mola vertical super fluido
-    function addSpringEffect() {
+    // Efeito de compressão tipo desenho animado ao bater no limite
+    function addCartoonSquashEffect() {
         const cards = document.querySelectorAll('.link-card');
-        let scrolling = false;
-        let scrollStopTimer;
-        let currentStretch = 0;
-        let targetStretch = 0;
-        let rafId;
+        let isAtTop = true;
+        let isAtBottom = false;
+        let squashing = false;
         
-        // Aplica a transformação baseada no valor de stretch (- = comprime, + = estica)
-        function applySpring() {
-            if (currentStretch > 0) {
-                // Esticando verticalmente
-                const scaleY = 1 + currentStretch * 0.06;
-                const scaleX = 1 - currentStretch * 0.025;
-                cards.forEach((card, i) => {
-                    card.style.transform = `scaleY(${scaleY}) scaleX(${scaleX})`;
+        function squashCards() {
+            if (squashing) return;
+            squashing = true;
+            
+            // Aplica a compressão (amassa)
+            cards.forEach((card, index) => {
+                const delay = index * 0.03;
+                card.style.transition = `transform 0.08s cubic-bezier(0.2, 1.3, 0.6, 1) ${delay}s`;
+                card.style.transform = `scaleY(0.88) scaleX(1.06)`;
+            });
+            
+            // Volta ao normal com bounce elástico
+            setTimeout(() => {
+                cards.forEach((card, index) => {
+                    const delay = index * 0.02;
+                    card.style.transition = `transform 0.15s cubic-bezier(0.2, 0.5, 0.2, 1.2) ${delay}s`;
+                    card.style.transform = `scaleY(1.02) scaleX(0.99)`;
                 });
-            } else if (currentStretch < 0) {
-                // Comprimindo verticalmente
-                const compress = Math.abs(currentStretch);
-                const scaleY = 1 - compress * 0.08;
-                const scaleX = 1 + compress * 0.03;
-                cards.forEach((card, i) => {
-                    card.style.transform = `scaleY(${scaleY}) scaleX(${scaleX})`;
-                });
-            } else {
-                // Normal
-                cards.forEach((card) => {
-                    card.style.transform = '';
-                });
-            }
+                
+                // Último ajuste para o normal
+                setTimeout(() => {
+                    cards.forEach((card) => {
+                        card.style.transition = `transform 0.2s cubic-bezier(0.2, 0.8, 0.4, 1)`;
+                        card.style.transform = '';
+                    });
+                    squashing = false;
+                }, 120);
+            }, 80);
         }
         
-        // Animação suave
-        function animateSpring() {
-            currentStretch += (targetStretch - currentStretch) * 0.25;
-            
-            if (Math.abs(currentStretch) < 0.005 && targetStretch === 0) {
-                currentStretch = 0;
-                applySpring();
-                rafId = null;
-                return;
-            }
-            
-            applySpring();
-            rafId = requestAnimationFrame(animateSpring);
-        }
-        
+        // Detecta quando bate no topo
         window.addEventListener('scroll', () => {
-            if (!scrolling) {
-                scrolling = true;
-                targetStretch = 0.7; // Estica ao começar
-                if (!rafId) animateSpring();
+            const scrollTop = window.scrollY;
+            const scrollBottom = document.body.scrollHeight - window.innerHeight - window.scrollY;
+            
+            // Bateu no topo (scroll no limite superior)
+            if (scrollTop <= 0 && !isAtTop) {
+                isAtTop = true;
+                squashCards();
+            } 
+            // Saiu do topo
+            else if (scrollTop > 0 && isAtTop) {
+                isAtTop = false;
             }
             
-            clearTimeout(scrollStopTimer);
-            scrollStopTimer = setTimeout(() => {
-                // Parou de rolar - comprime e volta
-                targetStretch = -0.8; // Comprime
+            // Bateu no fundo (scroll no limite inferior)
+            if (scrollBottom <= 0 && !isAtBottom) {
+                isAtBottom = true;
+                squashCards();
+            }
+            // Saiu do fundo
+            else if (scrollBottom > 5 && isAtBottom) {
+                isAtBottom = false;
+            }
+        });
+        
+        // Versão mais divertida: comprime também quando puxa no mobile
+        let touchStartY = 0;
+        let pulling = false;
+        
+        document.addEventListener('touchstart', (e) => {
+            if (window.scrollY === 0) {
+                touchStartY = e.touches[0].clientY;
+                pulling = true;
+            }
+        });
+        
+        document.addEventListener('touchmove', (e) => {
+            if (pulling && window.scrollY === 0) {
+                const pullDistance = e.touches[0].clientY - touchStartY;
+                if (pullDistance > 15) {
+                    // Compressão gradual enquanto puxa
+                    const compressAmount = Math.min(pullDistance / 200, 0.15);
+                    cards.forEach((card) => {
+                        card.style.transition = 'transform 0.02s linear';
+                        card.style.transform = `scaleY(${1 - compressAmount}) scaleX(${1 + compressAmount * 0.6})`;
+                    });
+                }
+            }
+        });
+        
+        document.addEventListener('touchend', () => {
+            if (pulling) {
+                // Amassa de verdade quando solta
+                cards.forEach((card) => {
+                    card.style.transition = 'transform 0.1s cubic-bezier(0.2, 1.2, 0.6, 1)';
+                    card.style.transform = `scaleY(0.85) scaleX(1.07)`;
+                });
                 
                 setTimeout(() => {
-                    targetStretch = 0; // Volta ao normal
+                    cards.forEach((card) => {
+                        card.style.transition = 'transform 0.15s cubic-bezier(0.2, 0.5, 0.2, 1.3)';
+                        card.style.transform = `scaleY(1.02) scaleX(0.99)`;
+                    });
                     setTimeout(() => {
-                        scrolling = false;
-                    }, 200);
+                        cards.forEach((card) => {
+                            card.style.transition = 'transform 0.2s ease-out';
+                            card.style.transform = '';
+                        });
+                    }, 120);
                 }, 80);
-            }, 50);
+                
+                pulling = false;
+            }
         });
     }
 
-    addSpringEffect();
+    // Chama a função
+    addCartoonSquashEffect();
 
     console.log('✨ Sweet Iza - Página com docinhos flutuantes e ícones personalizados ✨');
 });
