@@ -295,37 +295,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Efeito de amassar tipo desenho animado (SÓ quando bate no limite)
-    // Efeito de amassar - versão simples e garantida
-    function addSimpleSquash() {
+    // Efeito de compressão suave (leve e elegante)
+    function addGentleSquash() {
         const cards = document.querySelectorAll('.link-card');
-        let canSquash = true;
+        let isSquashing = false;
         
-        function doSquash() {
-            if (!canSquash) return;
-            canSquash = false;
+        function gentleSquash() {
+            if (isSquashing) return;
+            isSquashing = true;
             
-            // Amassa
-            cards.forEach(card => {
-                card.style.transition = 'transform 0.07s ease-out';
-                card.style.transform = 'scaleY(0.85) scaleX(1.09)';
+            // Compressão bem leve (só 3% de diferença)
+            cards.forEach((card, i) => {
+                const delay = i * 0.01;
+                card.style.transition = `transform 0.1s cubic-bezier(0.2, 0.9, 0.4, 1.1) ${delay}s`;
+                card.style.transform = `scaleY(0.97) scaleX(1.01)`;
             });
             
-            // Volta com bounce
+            // Volta ao normal suavemente
             setTimeout(() => {
-                cards.forEach(card => {
-                    card.style.transition = 'transform 0.12s cubic-bezier(0.2, 1.2, 0.4, 1)';
-                    card.style.transform = 'scaleY(1.02) scaleX(0.99)';
+                cards.forEach((card, i) => {
+                    const delay = i * 0.008;
+                    card.style.transition = `transform 0.2s cubic-bezier(0.2, 0.7, 0.4, 1) ${delay}s`;
+                    card.style.transform = '';
                 });
                 
                 setTimeout(() => {
-                    cards.forEach(card => {
-                        card.style.transition = 'transform 0.1s ease-out';
-                        card.style.transform = '';
-                    });
-                    canSquash = true;
-                }, 120);
-            }, 70);
+                    isSquashing = false;
+                }, 250);
+            }, 100);
         }
         
         let lastTop = true;
@@ -335,15 +332,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const atTop = window.scrollY <= 1;
             const atBottom = document.body.scrollHeight - window.innerHeight - window.scrollY <= 1;
             
-            if (atTop && !lastTop) doSquash();
-            if (atBottom && !lastBottom) doSquash();
+            if (atTop && !lastTop) gentleSquash();
+            if (atBottom && !lastBottom) gentleSquash();
             
             lastTop = atTop;
             lastBottom = atBottom;
         });
     }
 
-    addSimpleSquash();
+    addGentleSquash();
 
     console.log('✨ Sweet Iza - Página com docinhos flutuantes e ícones personalizados ✨');
 });
