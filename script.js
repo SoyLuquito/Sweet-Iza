@@ -296,121 +296,68 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Efeito de compressão tipo desenho animado ao bater no limite
-    function addCartoonSquashEffect() {
+    // Efeito de amassar com bounce elástico (bem cartoon)
+    function addElasticSquash() {
         const cards = document.querySelectorAll('.link-card');
-        let isAtTop = true;
-        let isAtBottom = false;
         let squashing = false;
         
-        function squashCards() {
+        const squashKeyframes = [
+            { scaleY: 0.84, scaleX: 1.1, duration: 55 },   // Amassa forte
+            { scaleY: 0.92, scaleX: 1.05, duration: 65 },   // Alivia um pouco
+            { scaleY: 1.03, scaleX: 0.98, duration: 80 },   // Estica pra voltar
+            { scaleY: 0.99, scaleX: 1.01, duration: 60 },   // Ajusta fino
+            { scaleY: 1, scaleX: 1, duration: 50 }          // Normal
+        ];
+        
+        function playSquash() {
             if (squashing) return;
             squashing = true;
             
-            // Aplica a compressão (amassa)
-            cards.forEach((card, index) => {
-                const delay = index * 0.03;
-                card.style.transition = `transform 0.08s cubic-bezier(0.2, 1.3, 0.6, 1) ${delay}s`;
-                card.style.transform = `scaleY(0.88) scaleX(1.06)`;
-            });
+            let step = 0;
             
-            // Volta ao normal com bounce elástico
-            setTimeout(() => {
-                cards.forEach((card, index) => {
-                    const delay = index * 0.02;
-                    card.style.transition = `transform 0.15s cubic-bezier(0.2, 0.5, 0.2, 1.2) ${delay}s`;
-                    card.style.transform = `scaleY(1.02) scaleX(0.99)`;
+            function applyStep() {
+                if (step >= squashKeyframes.length) {
+                    squashing = false;
+                    return;
+                }
+                
+                const key = squashKeyframes[step];
+                cards.forEach((card, i) => {
+                    card.style.transition = `transform ${key.duration}ms cubic-bezier(0.2, 1.1, 0.4, 1)`;
+                    card.style.transform = `scaleY(${key.scaleY}) scaleX(${key.scaleX})`;
                 });
                 
-                // Último ajuste para o normal
-                setTimeout(() => {
-                    cards.forEach((card) => {
-                        card.style.transition = `transform 0.2s cubic-bezier(0.2, 0.8, 0.4, 1)`;
-                        card.style.transform = '';
-                    });
-                    squashing = false;
-                }, 120);
-            }, 80);
+                step++;
+                setTimeout(applyStep, key.duration);
+            }
+            
+            applyStep();
         }
         
-        // Detecta quando bate no topo
+        let atTop = true;
+        let atBottom = false;
+        
         window.addEventListener('scroll', () => {
             const scrollTop = window.scrollY;
             const scrollBottom = document.body.scrollHeight - window.innerHeight - window.scrollY;
             
-            // Bateu no topo (scroll no limite superior)
-            if (scrollTop <= 0 && !isAtTop) {
-                isAtTop = true;
-                squashCards();
-            } 
-            // Saiu do topo
-            else if (scrollTop > 0 && isAtTop) {
-                isAtTop = false;
+            if (scrollTop <= 1 && !atTop) {
+                atTop = true;
+                playSquash();
+            } else if (scrollTop > 1 && atTop) {
+                atTop = false;
             }
             
-            // Bateu no fundo (scroll no limite inferior)
-            if (scrollBottom <= 0 && !isAtBottom) {
-                isAtBottom = true;
-                squashCards();
-            }
-            // Saiu do fundo
-            else if (scrollBottom > 5 && isAtBottom) {
-                isAtBottom = false;
-            }
-        });
-        
-        // Versão mais divertida: comprime também quando puxa no mobile
-        let touchStartY = 0;
-        let pulling = false;
-        
-        document.addEventListener('touchstart', (e) => {
-            if (window.scrollY === 0) {
-                touchStartY = e.touches[0].clientY;
-                pulling = true;
-            }
-        });
-        
-        document.addEventListener('touchmove', (e) => {
-            if (pulling && window.scrollY === 0) {
-                const pullDistance = e.touches[0].clientY - touchStartY;
-                if (pullDistance > 15) {
-                    // Compressão gradual enquanto puxa
-                    const compressAmount = Math.min(pullDistance / 200, 0.15);
-                    cards.forEach((card) => {
-                        card.style.transition = 'transform 0.02s linear';
-                        card.style.transform = `scaleY(${1 - compressAmount}) scaleX(${1 + compressAmount * 0.6})`;
-                    });
-                }
-            }
-        });
-        
-        document.addEventListener('touchend', () => {
-            if (pulling) {
-                // Amassa de verdade quando solta
-                cards.forEach((card) => {
-                    card.style.transition = 'transform 0.1s cubic-bezier(0.2, 1.2, 0.6, 1)';
-                    card.style.transform = `scaleY(0.85) scaleX(1.07)`;
-                });
-                
-                setTimeout(() => {
-                    cards.forEach((card) => {
-                        card.style.transition = 'transform 0.15s cubic-bezier(0.2, 0.5, 0.2, 1.3)';
-                        card.style.transform = `scaleY(1.02) scaleX(0.99)`;
-                    });
-                    setTimeout(() => {
-                        cards.forEach((card) => {
-                            card.style.transition = 'transform 0.2s ease-out';
-                            card.style.transform = '';
-                        });
-                    }, 120);
-                }, 80);
-                
-                pulling = false;
+            if (scrollBottom <= 1 && !atBottom) {
+                atBottom = true;
+                playSquash();
+            } else if (scrollBottom > 5 && atBottom) {
+                atBottom = false;
             }
         });
     }
 
-    // Chama a função
-    addCartoonSquashEffect();
+    addElasticSquash();
 
     console.log('✨ Sweet Iza - Página com docinhos flutuantes e ícones personalizados ✨');
 });
