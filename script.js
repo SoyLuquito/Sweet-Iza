@@ -296,6 +296,105 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
+    // Efeito de "achatar" os botões no scroll bounce (mobile)
+    let scrollTimeout;
+    let lastScrollY = 0;
+    let isPulling = false;
+
+    function addBounceCompression() {
+        const cards = document.querySelectorAll('.link-card');
+        const container = document.querySelector('.container');
+        
+        if (!container) return;
+        
+        window.addEventListener('scroll', () => {
+            // Detecta se está puxando para baixo no topo
+            const currentScrollY = window.scrollY;
+            const isAtTop = currentScrollY <= 0;
+            const isPullingDown = currentScrollY < lastScrollY && currentScrollY < 10;
+            
+            if (isAtTop && isPullingDown) {
+                // Calcula o "pull" baseado no quanto está puxando
+                const pullAmount = Math.min(Math.abs(currentScrollY) * 0.5, 30);
+                const compressionScale = 1 - (pullAmount / 200);
+                
+                // Aplica o efeito de compressão nos cards
+                cards.forEach((card, index) => {
+                    const delay = index * 0.05;
+                    card.style.transition = 'transform 0.05s linear';
+                    card.style.transform = `scaleY(${Math.max(0.92, compressionScale)}) scaleX(${Math.min(1.02, 1 + (pullAmount / 300))})`;
+                });
+                
+                isPulling = true;
+            } else if (isPulling && !isPullingDown) {
+                // Volta ao normal quando solta
+                cards.forEach((card) => {
+                    card.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
+                    card.style.transform = '';
+                });
+                isPulling = false;
+            }
+            
+            lastScrollY = currentScrollY;
+            
+            // Limpa timeout anterior
+            if (scrollTimeout) clearTimeout(scrollTimeout);
+            
+            // Reset após parar de rolar
+            scrollTimeout = setTimeout(() => {
+                if (!isPulling) {
+                    cards.forEach((card) => {
+                        card.style.transform = '';
+                    });
+                }
+            }, 150);
+        }, { passive: true });
+    }
+
+    // Adicionar também efeito de "puxar" no touch move para mobile
+    function addPullEffect() {
+        let touchStartY = 0;
+        let isTouching = false;
+        const cards = document.querySelectorAll('.link-card');
+        
+        document.addEventListener('touchstart', (e) => {
+            if (window.scrollY === 0) {
+                touchStartY = e.touches[0].clientY;
+                isTouching = true;
+            }
+        }, { passive: true });
+        
+        document.addEventListener('touchmove', (e) => {
+            if (isTouching && window.scrollY === 0) {
+                const touchCurrentY = e.touches[0].clientY;
+                const pullDistance = Math.max(0, touchCurrentY - touchStartY);
+                const compressionScale = 1 - Math.min(pullDistance / 300, 0.1);
+                
+                cards.forEach((card, index) => {
+                    const delay = index * 0.03;
+                    card.style.transition = 'transform 0.02s linear';
+                    card.style.transform = `scaleY(${compressionScale}) scaleX(${1 + (pullDistance / 800)})`;
+                });
+            }
+        }, { passive: true });
+        
+        document.addEventListener('touchend', () => {
+            if (isTouching) {
+                cards.forEach((card) => {
+                    card.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
+                    card.style.transform = '';
+                });
+                isTouching = false;
+            }
+        });
+    }
+
+    // Chamar as funções apenas no mobile
+    if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        addBounceCompression();
+        addPullEffect();
+    }
+
     console.log('✨ Sweet Iza - Página com docinhos flutuantes e ícones personalizados ✨');
 });
 
