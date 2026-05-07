@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Sweet Iza · Doceria Artesanal</title>
+    
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" sizes="32x32" href="icon.png">
+    <link rel="shortcut icon" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    
+    <link rel="stylesheet" href="page.css">
+    <!-- Font Awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- AOS Animation Library (CORRIGIDO) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+</head>
+<body>
+    <!-- NAVEGAÇÃO -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo-nav">
+                <img src="logo.png" alt="Sweet Iza" class="nav-logo" onerror="this.src='https://placehold.co/40x40?text=🍰'">
+                <span class="nav-brand">Sweet Iza</span>
+            </div>
+            <div class="nav-links">
+                <a href="#home">Início</a>
+                <a href="#produtos">Doces</a>
+                <a href="#sobre">Sobre</a>
+                <a href="#contato">Contato</a>
+            </div>
+            <div class="menu-mobile">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="hero">
+        <div class="hero-content" data-aos="fade-up" data-aos-duration="1000">
+            <div class="hero-badge">
+                <i class="fas fa-heart"></i> Artesanal com amor
+            </div>
+            <h1 class="hero-title">
+                Doces que <span class="highlight">aquecem</span><br>
+                o coração
+            </h1>
+            <p class="hero-subtitle">
+                Receitas exclusivas, ingredientes selecionados e todo carinho que você merece.
+                Doçura artesanal feita com paixão.
+            </p>
+            <div class="hero-buttons">
+                <a href="https://wa.me/5511925324479" class="btn-primary" target="_blank">
+                    <i class="fab fa-whatsapp"></i> Fazer pedido
+                </a>
+                <a href="#produtos" class="btn-secondary">
+                    Ver doces <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="hero-stats" data-aos="fade-up" data-aos-delay="200">
+            <div class="stat">
+                <span class="stat-number">500+</span>
+                <span class="stat-label">Clientes felizes</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+                <span class="stat-number">30+</span>
+                <span class="stat-label">Receitas exclusivas</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+                <span class="stat-number">4.9</span>
+                <span class="stat-label">Avaliações</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUTOS -->
+    <section id="produtos" class="produtos">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-tag">Nossos doces</span>
+                <h2 class="section-title">Especialidades da casa</h2>
+                <p class="section-subtitle">Sabores que encantam e transformam momentos em lembranças doces</p>
+            </div>
+            
+            <div class="produtos-grid">
+                <div class="produto-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="produto-image">
+                        <img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400&h=400&fit=crop" alt="Bolo artesanal">
+                        <div class="produto-badge">★ Destaque</div>
+                    </div>
+                    <div class="produto-info">
+                        <h3>Bolo de chocolate artesanal</h3>
+                        <p>Massas fofinhas com calda especial e granulado belga</p>
+                        <div class="produto-footer">
+                            <span class="price">R$ 45,00</span>
+                            <button class="order-btn" data-produto="Bolo de chocolate">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="produto-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="produto-image">
+                        <img src="https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=400&h=400&fit=crop" alt="Cupcake">
+                    </div>
+                    <div class="produto-info">
+                        <h3>Cupcake de baunilha</h3>
+                        <p>Buttercream artesanal com confeitos coloridos</p>
+                        <div class="produto-footer">
+                            <span class="price">R$ 12,00</span>
+                            <button class="order-btn" data-produto="Cupcake de baunilha">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="produto-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="produto-image">
+                        <img src="https://images.unsplash.com/photo-1587314168485-3236d6710814?w=400&h=400&fit=crop" alt="Torta de morango">
+                    </div>
+                    <div class="produto-info">
+                        <h3>Torta de morango</h3>
+                        <p>Frutas frescas com creme leve e massa crocante</p>
+                        <div class="produto-footer">
+                            <span class="price">R$ 38,00</span>
+                            <button class="order-btn" data-produto="Torta de morango">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="produto-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="produto-image">
+                        <img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=400&h=400&fit=crop" alt="Macarons">
+                    </div>
+                    <div class="produto-info">
+                        <h3>Macarons franceses</h3>
+                        <p>Caixa com 6 unidades de sabores variados</p>
+                        <div class="produto-footer">
+                            <span class="price">R$ 32,00</span>
+                            <button class="order-btn" data-produto="Macarons franceses">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOBRE -->
+    <section id="sobre" class="sobre">
+        <div class="container">
+            <div class="sobre-content">
+                <div class="sobre-text" data-aos="fade-right">
+                    <span class="section-tag">Nossa história</span>
+                    <h2 class="section-title">Doçura feita com <span class="highlight">amor e dedicação</span></h2>
+                    <p>A Sweet Iza nasceu do sonho de transformar momentos especiais em memórias doces. Cada receita é testada e aprovada até atingir a perfeição.</p>
+                    <p>Utilizamos ingredientes selecionados, sem conservantes, e todo cuidado para entregar doces que aquecem o coração.</p>
+                    <div class="sobre-features">
+                        <div class="feature">
+                            <i class="fas fa-leaf"></i>
+                            <span>Ingredientes naturais</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-heart"></i>
+                            <span>Feito com amor</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-truck"></i>
+                            <span>Entrega em até 2h</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="sobre-image" data-aos="fade-left">
+                    <img src="https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?w=500&h=500&fit=crop" alt="Nossa doceria">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEPOIMENTOS -->
+    <section class="depoimentos">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-tag">O que dizem</span>
+                <h2 class="section-title">Quem já provou ama</h2>
+            </div>
+            
+            <div class="depoimentos-grid">
+                <div class="depoimento-card" data-aos="fade-up" data-aos-delay="100">
+                    <i class="fas fa-quote-left"></i>
+                    <p>O bolo de chocolate é simplesmente divino! Melhor que já comi, sem exagero. Atendimento nota 10!</p>
+                    <div class="cliente">
+                        <strong>Ana Paula</strong>
+                        <div class="stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="depoimento-card" data-aos="fade-up" data-aos-delay="200">
+                    <i class="fas fa-quote-left"></i>
+                    <p>Encomendei para o aniversário da minha filha e foi um sucesso! Todos amaram, super recomendo!</p>
+                    <div class="cliente">
+                        <strong>Marcos Silva</strong>
+                        <div class="stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="depoimento-card" data-aos="fade-up" data-aos-delay="300">
+                    <i class="fas fa-quote-left"></i>
+                    <p>Os cupcakes são lindos e deliciosos. Amei o carinho na embalagem, com certeza comprarei mais vezes.</p>
+                    <div class="cliente">
+                        <strong>Carla Mendes</strong>
+                        <div class="stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTATO / NEWSLETTER -->
+    <section id="contato" class="newsletter">
+        <div class="container" data-aos="fade-up">
+            <h2>Quer receber novidades?</h2>
+            <p>Cadastre-se e ganhe 10% de desconto na primeira compra!</p>
+            <form id="newsletter-form" class="newsletter-form">
+                <input type="email" placeholder="Seu melhor e-mail" required>
+                <button type="submit">Quero doce <i class="fas fa-arrow-right"></i></button>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer-page">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="logo.png" alt="Sweet Iza" class="footer-logo" onerror="this.src='https://placehold.co/60x60?text=🍰'">
+                    <p>Doces artesanais que aquecem o coração, feitos com amor e dedicação.</p>
+                    <div class="social-links">
+                        <a href="https://www.instagram.com/sweet.izaaaa?igsh=NDllcG1yOGY2dGg=" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://wa.me/5511925324479" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Links rápidos</h4>
+                    <a href="#home">Início</a>
+                    <a href="#produtos">Doces</a>
+                    <a href="#sobre">Sobre</a>
+                    <a href="#contato">Contato</a>
+                </div>
+                <div class="footer-contato">
+                    <h4>Contato</h4>
+                    <p><i class="fab fa-whatsapp"></i> (11) 92532-4479</p>
+                    <p><i class="fas fa-envelope"></i> contato@sweetiza.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> São Paulo - SP</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Sweet Iza - Todos os direitos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botão flutuante WhatsApp -->
+    <a href="https://wa.me/5511925324479" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="page.js"></script>
+</body>
+</html>
