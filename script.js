@@ -295,45 +295,50 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Efeito de compressão tipo desenho animado ao bater no limite
-    // Efeito de amassar com bounce elástico (bem cartoon)
-    function addElasticSquash() {
+    // Efeito de amassar tipo desenho animado (SÓ quando bate no limite)
+    function addSquashEffect() {
         const cards = document.querySelectorAll('.link-card');
-        let squashing = false;
+        let isAnimating = false;
         
-        const squashKeyframes = [
-            { scaleY: 0.84, scaleX: 1.1, duration: 55 },   // Amassa forte
-            { scaleY: 0.92, scaleX: 1.05, duration: 65 },   // Alivia um pouco
-            { scaleY: 1.03, scaleX: 0.98, duration: 80 },   // Estica pra voltar
-            { scaleY: 0.99, scaleX: 1.01, duration: 60 },   // Ajusta fino
-            { scaleY: 1, scaleX: 1, duration: 50 }          // Normal
-        ];
-        
-        function playSquash() {
-            if (squashing) return;
-            squashing = true;
+        function squash() {
+            if (isAnimating) return;
+            isAnimating = true;
             
-            let step = 0;
+            // Frame 1: Amassa rapidinho (comprime)
+            cards.forEach((card, i) => {
+                card.style.transition = `transform 0.06s cubic-bezier(0.2, 1.2, 0.8, 1)`;
+                card.style.transform = `scaleY(0.86) scaleX(1.08)`;
+            });
             
-            function applyStep() {
-                if (step >= squashKeyframes.length) {
-                    squashing = false;
-                    return;
-                }
-                
-                const key = squashKeyframes[step];
+            // Frame 2: Volta um pouco (sobre-compressão)
+            setTimeout(() => {
                 cards.forEach((card, i) => {
-                    card.style.transition = `transform ${key.duration}ms cubic-bezier(0.2, 1.1, 0.4, 1)`;
-                    card.style.transform = `scaleY(${key.scaleY}) scaleX(${key.scaleX})`;
+                    card.style.transition = `transform 0.08s cubic-bezier(0.2, 0.9, 0.4, 1.1)`;
+                    card.style.transform = `scaleY(0.94) scaleX(1.04)`;
                 });
-                
-                step++;
-                setTimeout(applyStep, key.duration);
-            }
+            }, 60);
             
-            applyStep();
+            // Frame 3: Estica levemente
+            setTimeout(() => {
+                cards.forEach((card, i) => {
+                    card.style.transition = `transform 0.1s cubic-bezier(0.1, 1.1, 0.3, 1)`;
+                    card.style.transform = `scaleY(1.04) scaleX(0.98)`;
+                });
+            }, 140);
+            
+            // Frame 4: Volta ao normal
+            setTimeout(() => {
+                cards.forEach((card, i) => {
+                    card.style.transition = `transform 0.15s cubic-bezier(0.2, 0.6, 0.2, 1.2)`;
+                    card.style.transform = `scaleY(1) scaleX(1)`;
+                });
+                setTimeout(() => {
+                    isAnimating = false;
+                }, 180);
+            }, 220);
         }
         
+        // Detecta quando bate no topo
         let atTop = true;
         let atBottom = false;
         
@@ -341,21 +346,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const scrollTop = window.scrollY;
             const scrollBottom = document.body.scrollHeight - window.innerHeight - window.scrollY;
             
-            if (scrollTop <= 1 && !atTop) {
+            if (scrollTop <= 2 && !atTop) {
                 atTop = true;
-                playSquash();
-            } else if (scrollTop > 1 && atTop) {
+                squash();
+            } else if (scrollTop > 2 && atTop) {
                 atTop = false;
             }
             
-            if (scrollBottom <= 1 && !atBottom) {
+            if (scrollBottom <= 2 && !atBottom) {
                 atBottom = true;
-                playSquash();
+                squash();
             } else if (scrollBottom > 5 && atBottom) {
                 atBottom = false;
             }
         });
     }
+
+    addSquashEffect();
 
     addElasticSquash();
 
