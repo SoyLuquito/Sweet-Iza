@@ -34,7 +34,7 @@ body::before {
     z-index: 0;
 }
 
-/* ONDULAÇÃO - METADE DA TELA */
+/* ONDULAÇÃO - MEIO TERMO (RECOMENDADO) */
 .wave-ornament {
     position: fixed;
     bottom: 0;
@@ -51,17 +51,17 @@ body::before {
     filter: drop-shadow(0 -4px 6px rgba(0, 0, 0, 0.02));
 }
 
-/* Mobile - ondas ocupando metade da tela */
+/* Mobile */
 @media (max-width: 768px) {
     .wave-svg {
-        min-height: 45vh;
+        min-height: 50vh;
     }
 }
 
-/* Desktop - ondas altas mas proporcionais */
+/* Desktop */
 @media (min-width: 769px) {
     .wave-svg {
-        min-height: 280px;
+        min-height: 300px;
     }
 }
 
@@ -206,8 +206,8 @@ body::before {
 
 .ifood-icon .platform-icon,
 .keeta-icon .platform-icon {
-    width: 45px;
-    height: 45px;
+    width: 32px;
+    height: 32px;
 }
 
 .ninenine-icon .platform-icon {
@@ -323,8 +323,8 @@ body::before {
     
     .ifood-icon .platform-icon,
     .keeta-icon .platform-icon {
-        width: 42px;
-        height: 42px;
+        width: 32px;
+        height: 32px;
     }
     
     .ninenine-icon .platform-icon {

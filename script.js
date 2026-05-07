@@ -7,12 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Criar elemento de ondulação SVG
     createWaveOrnament();
     
-    // Função para criar o ondulado SVG (sem caixa, apenas o formato ~)
+    // Função para criar o ondulado SVG com altura aumentada
     function createWaveOrnament() {
         const waveDiv = document.createElement('div');
         waveDiv.className = 'wave-ornament';
         waveDiv.innerHTML = `
-            <svg class="wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 180" preserveAspectRatio="none">
+            <svg class="wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none" style="min-height: 400px;">
                 <path fill="#f6b7d4" fill-opacity="0.25" d="M0,96L48,101.3C96,107,192,117,288,112C384,107,480,85,576,90.7C672,96,768,128,864,133.3C960,139,1056,117,1152,101.3C1248,85,1344,75,1392,69.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
                 <path fill="#f6b7d4" fill-opacity="0.15" d="M0,128L48,117.3C96,107,192,85,288,90.7C384,96,480,128,576,138.7C672,149,768,139,864,117.3C960,96,1056,64,1152,64C1248,64,1344,96,1392,112L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
                 <path fill="#f6b7d4" fill-opacity="0.08" d="M0,160L48,165.3C96,171,192,181,288,176C384,171,480,149,576,138.7C672,128,768,128,864,138.7C960,149,1056,171,1152,176C1248,181,1344,171,1392,165.3L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
