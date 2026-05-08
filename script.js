@@ -290,52 +290,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     document.head.appendChild(rippleStyle);
     
-    // Efeito de compressão suave (amassar no limite do scroll)
-    function addSoftSquash() {
-        const cards = document.querySelectorAll('.link-card');
-        let squashing = false;
-        
-        function softSquash() {
-            if (squashing) return;
-            squashing = true;
-            
-            // Compressão suave
-            cards.forEach((card) => {
-                card.style.transition = 'transform 0.1s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
-                card.style.transform = 'scaleY(0.97) scaleX(1.01)';
-            });
-            
-            // Volta com bounce suave
-            setTimeout(() => {
-                cards.forEach((card) => {
-                    card.style.transition = 'transform 0.2s cubic-bezier(0.2, 0.7, 0.3, 1.2)';
-                    card.style.transform = '';
-                });
-                
-                setTimeout(() => {
-                    squashing = false;
-                }, 240);
-            }, 100);
-        }
-        
-        let lastTop = true;
-        let lastBottom = false;
-        
-        window.addEventListener('scroll', () => {
-            const atTop = window.scrollY <= 1;
-            const atBottom = document.body.scrollHeight - window.innerHeight - window.scrollY <= 1;
-            
-            if (atTop && !lastTop) softSquash();
-            if (atBottom && !lastBottom) softSquash();
-            
-            lastTop = atTop;
-            lastBottom = atBottom;
-        });
-    }
-    
-    // Iniciar efeito de compressão
-    addSoftSquash();
-    
     // Verificação da logo
     const logoImg = document.querySelector('.avatar-logo');
     if (logoImg) {
