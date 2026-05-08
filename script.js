@@ -1,0 +1,362 @@
+// script.js - Efeitos visuais refinados + doces flutuantes
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Lista de docinhos para flutuar
+    const docinhos = ['🍦', '🍧', '🍨', '🍩', '🍪', '🎂', '🍰', '🧁', '🥧', '🍫', '🍬', '🍭', '🍮', '🍯'];
+    
+    // Criar elemento de ondulação SVG
+    createWaveOrnament();
+    
+    // Função para criar o ondulado SVG
+    function createWaveOrnament() {
+        const waveDiv = document.createElement('div');
+        waveDiv.className = 'wave-ornament';
+        waveDiv.innerHTML = `
+            <svg class="wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none" style="min-height: 400px;">
+                <path fill="#f6b7d4" fill-opacity="0.25" d="M0,96L48,101.3C96,107,192,117,288,112C384,107,480,85,576,90.7C672,96,768,128,864,133.3C960,139,1056,117,1152,101.3C1248,85,1344,75,1392,69.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                <path fill="#f6b7d4" fill-opacity="0.15" d="M0,128L48,117.3C96,107,192,85,288,90.7C384,96,480,128,576,138.7C672,149,768,139,864,117.3C960,96,1056,64,1152,64C1248,64,1344,96,1392,112L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                <path fill="#f6b7d4" fill-opacity="0.08" d="M0,160L48,165.3C96,171,192,181,288,176C384,171,480,149,576,138.7C672,128,768,128,864,138.7C960,149,1056,171,1152,176C1248,181,1344,171,1392,165.3L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+            </svg>
+        `;
+        document.body.appendChild(waveDiv);
+    }
+    
+    // Sistema de docinhos flutuantes que sobem pela tela
+    function criarDocinhoFlutuante() {
+        const docinho = document.createElement('div');
+        const docinhoAleatorio = docinhos[Math.floor(Math.random() * docinhos.length)];
+        docinho.textContent = docinhoAleatorio;
+        docinho.className = 'docinho-flutuante';
+        
+        // Posição horizontal aleatória (laterais e meio)
+        const posicao = Math.random();
+        let leftPosition;
+        if (posicao < 0.3) {
+            leftPosition = Math.random() * 15; // lado esquerdo
+        } else if (posicao < 0.6) {
+            leftPosition = 85 + Math.random() * 15; // lado direito
+        } else {
+            leftPosition = 30 + Math.random() * 40; // meio
+        }
+        
+        // Tamanho aleatório
+        const tamanho = 20 + Math.random() * 36;
+        
+        // Duração da animação
+        const duracao = 6 + Math.random() * 10;
+        
+        // Atraso inicial aleatório
+        const atraso = Math.random() * 5;
+        
+        // Z-index aleatório para passar tanto na frente quanto atrás
+        const zIndexOptions = [3, 5, 8, 12, 18, 22];
+        const randomZIndex = zIndexOptions[Math.floor(Math.random() * zIndexOptions.length)];
+        
+        docinho.style.cssText = `
+            position: fixed;
+            bottom: -50px;
+            left: ${leftPosition}%;
+            font-size: ${tamanho}px;
+            opacity: 0;
+            z-index: ${randomZIndex};
+            pointer-events: none;
+            animation: subirDocinho ${duracao}s linear ${atraso}s infinite;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        `;
+        
+        document.body.appendChild(docinho);
+        
+        // Remover o elemento após a animação
+        setTimeout(() => {
+            if (docinho && docinho.remove) {
+                docinho.remove();
+            }
+        }, (duracao + atraso) * 1000);
+    }
+    
+    // Adicionar keyframe da animação de subir
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes subirDocinho {
+            0% {
+                bottom: -50px;
+                opacity: 0;
+                transform: rotate(0deg) translateX(0);
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                bottom: 100vh;
+                opacity: 0;
+                transform: rotate(360deg) translateX(${Math.random() * 40 - 20}px);
+            }
+        }
+        
+        .docinho-flutuante {
+            will-change: transform, bottom;
+        }
+        
+        .wave-ornament {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .wave-svg {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .wave-svg {
+                min-height: 50vh;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .wave-svg {
+                min-height: 300px;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Criar docinhos em intervalos regulares
+    let intervaloDocinhos;
+    
+    function iniciarDocinhos() {
+        // Criar poucos docinhos imediatamente
+        for (let i = 0; i < 2; i++) {
+            setTimeout(() => criarDocinhoFlutuante(), i * 300);
+        }
+        
+        // Criar docinhos a cada 4 segundos
+        intervaloDocinhos = setInterval(() => {
+            criarDocinhoFlutuante();
+        }, 4000);
+    }
+    
+    function pararDocinhos() {
+        if (intervaloDocinhos) {
+            clearInterval(intervaloDocinhos);
+        }
+    }
+    
+    // Iniciar os docinhos flutuantes
+    iniciarDocinhos();
+    
+    // Parar docinhos quando a página não estiver visível
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            pararDocinhos();
+        } else {
+            iniciarDocinhos();
+        }
+    });
+    
+    // CONFIGURAÇÕES DOS LINKS
+    const ifoodLink = document.getElementById('ifood-link');
+    const ninenineLink = document.getElementById('ninenine-link');
+    const keetaLink = document.getElementById('keeta-link');
+    
+    // Feedback visual ao clicar em links vazios
+    const emptyLinks = [ifoodLink, ninenineLink, keetaLink];
+    
+    emptyLinks.forEach(link => {
+        if (link && (!link.href || link.href === '#' || link.href.includes('#'))) {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const platformName = link.querySelector('.platform')?.innerText || 'plataforma';
+                showToast(`📢 ${platformName} estará disponível em breve!`, '#f6b7d4');
+            });
+        }
+    });
+    
+    // Função para mostrar notificação temporária (toast)
+    function showToast(message, bgColor) {
+        const existingToast = document.querySelector('.custom-toast');
+        if (existingToast) existingToast.remove();
+        
+        const toast = document.createElement('div');
+        toast.className = 'custom-toast';
+        toast.innerHTML = `
+            <div style="
+                background: ${bgColor};
+                color: #1f2440;
+                padding: 12px 20px;
+                border-radius: 50px;
+                font-size: 0.85rem;
+                font-weight: 500;
+                box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+                backdrop-filter: blur(4px);
+                border: 1px solid rgba(255,255,255,0.3);
+            ">
+                ${message}
+            </div>
+        `;
+        toast.style.position = 'fixed';
+        toast.style.bottom = '20px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.zIndex = '10000';
+        toast.style.animation = 'toastSlideUp 0.3s ease-out';
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.animation = 'toastSlideDown 0.3s ease-out';
+            setTimeout(() => toast.remove(), 300);
+        }, 2500);
+    }
+    
+    // Adiciona as animações CSS para o toast
+    const toastStyle = document.createElement('style');
+    toastStyle.textContent = `
+        @keyframes toastSlideUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        @keyframes toastSlideDown {
+            from {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+        }
+    `;
+    document.head.appendChild(toastStyle);
+    
+    // Efeito de ripple nos cards
+    const cards = document.querySelectorAll('.link-card');
+    cards.forEach(card => {
+        card.addEventListener('click', function(e) {
+            if (this.href && !this.href.includes('#')) {
+                const ripple = document.createElement('span');
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.backgroundColor = 'rgba(246, 183, 212, 0.3)';
+                ripple.style.width = '100px';
+                ripple.style.height = '100px';
+                ripple.style.transform = 'translate(-50%, -50%) scale(0)';
+                ripple.style.animation = 'ripple 0.6s ease-out';
+                ripple.style.pointerEvents = 'none';
+                
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.style.position = 'absolute';
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => ripple.remove(), 600);
+            }
+        });
+    });
+    
+    const rippleStyle = document.createElement('style');
+    rippleStyle.textContent = `
+        @keyframes ripple {
+            from {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(4);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(rippleStyle);
+    
+    // Efeito de compressão suave (amassar no limite do scroll)
+    function addSoftSquash() {
+        const cards = document.querySelectorAll('.link-card');
+        let squashing = false;
+        
+        function softSquash() {
+            if (squashing) return;
+            squashing = true;
+            
+            // Compressão suave
+            cards.forEach((card) => {
+                card.style.transition = 'transform 0.1s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
+                card.style.transform = 'scaleY(0.97) scaleX(1.01)';
+            });
+            
+            // Volta com bounce suave
+            setTimeout(() => {
+                cards.forEach((card) => {
+                    card.style.transition = 'transform 0.2s cubic-bezier(0.2, 0.7, 0.3, 1.2)';
+                    card.style.transform = '';
+                });
+                
+                setTimeout(() => {
+                    squashing = false;
+                }, 240);
+            }, 100);
+        }
+        
+        let lastTop = true;
+        let lastBottom = false;
+        
+        window.addEventListener('scroll', () => {
+            const atTop = window.scrollY <= 1;
+            const atBottom = document.body.scrollHeight - window.innerHeight - window.scrollY <= 1;
+            
+            if (atTop && !lastTop) softSquash();
+            if (atBottom && !lastBottom) softSquash();
+            
+            lastTop = atTop;
+            lastBottom = atBottom;
+        });
+    }
+    
+    // Iniciar efeito de compressão
+    addSoftSquash();
+    
+    // Verificação da logo
+    const logoImg = document.querySelector('.avatar-logo');
+    if (logoImg) {
+        logoImg.addEventListener('error', () => {
+            console.log('logo.png não encontrada - usando placeholder');
+        });
+    }
+    
+    // Verificação das imagens dos apps
+    const platformIcons = document.querySelectorAll('.platform-icon');
+    platformIcons.forEach(icon => {
+        icon.addEventListener('error', () => {
+            console.log(`Imagem não encontrada: ${icon.alt} - usando fallback`);
+        });
+    });
+    
+    console.log('✨ Sweet Iza - Linktree carregado com sucesso ✨');
+});
+
+// Limpeza ao recarregar a página
+window.addEventListener('beforeunload', () => {
+    const docinhos = document.querySelectorAll('.docinho-flutuante');
+    docinhos.forEach(docinho => docinho.remove());
+});
